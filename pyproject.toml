@@ -1,7 +1,7 @@
 [tool.poetry]
 name = "msync"
 version = "0.1.0a"
-description = "Music Manager for Unix"
+description = "Music Manager for *nix systems"
 authors = ["Harsh Sharma <goharsh007@gmail.com>"]
 license = "GPL-3.0-only"
 readme = "README.md"

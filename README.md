@@ -1,2 +1,2 @@
 # msync
- Music Manager for Unix
+ Music Manager for *nix systems.
