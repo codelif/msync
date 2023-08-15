@@ -61,10 +61,7 @@ class ProgressHook:
 
     def hook(self, d):
         if not self.started:
-            try:
-                self.bar.total = float(d["total_bytes_estimate"])
-            except KeyError:
-                return
+            self.bar.total = float(d["total_bytes"])
             self.bar.refresh()
             self.started = True
         # print(d)
