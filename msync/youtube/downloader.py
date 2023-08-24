@@ -58,6 +58,7 @@ class ProgressHook:
         )
         self.bar.clear()
         self.started = False
+        self.last_down = 0
 
     def hook(self, d):
         if not self.started:
@@ -66,7 +67,9 @@ class ProgressHook:
             self.started = True
         # print(d)
         if d["status"] == "downloading":
-            self.bar.update(float(d["downloaded_bytes"]))
+            downloaded_bytes_delta = float(d["downloaded_bytes"]) - self.last_down
+            self.bar.update(downloaded_bytes_delta)
+            self.last_down = float(d["downloaded_bytes"])
 
         if d["status"] == "finished":
             self.bar.clear()
@@ -75,6 +78,7 @@ class ProgressHook:
         desc = f"{video['title'] if len(video['title']) < 25 else video['title'][:25]+'...'}"
         self.bar.set_description(desc)
         self.bar.reset()
+        self.last_down = 0
         self.started = False
 
 
