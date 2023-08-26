@@ -21,7 +21,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 from __future__ import unicode_literals
 
 import tempfile
-from typing import Callable
+from typing import Any, Callable
 
 import yt_dlp as youtube_dl
 from mutagen.easymp4 import EasyMP4
@@ -90,7 +90,7 @@ def gen_options(
     ydl_opts = {
         "writethumbnail": True,
         "format": "m4a/bestaudio/best",
-        "outtmpl": f'{playlist["title"]}/{video["artist"]} - {video["title"]}.%(ext)s',
+        "outtmpl": f'{video["artist"]} - {video["title"]}.%(ext)s',
         "paths": {"temp": tmpdir, "home": output_folder},
         "postprocessors": [
             {
@@ -115,7 +115,7 @@ def downloader(
     playlist,
     output_folder,
     ffmpeg_string,
-    callbacks: dict[int, Callable],
+    callback: dict[str, Any],
 ):
     prog = ProgressHook()
     print(f"Downloading '{playlist['title']}'...")
@@ -128,7 +128,7 @@ def downloader(
             colour="GREEN",
             bar_format="{desc}: {n_fmt}/{total_fmt}|{bar}|",
         ):
-            filename = f'{output_folder}/{playlist["title"]}/{video["artist"]} - {video["title"]}.m4a'
+            filename = f'{output_folder}/{video["artist"]} - {video["title"]}.m4a'
             ydl_opts = gen_options(
                 playlist, output_folder, tmpdir, video, ffmpeg_string, prog
             )
@@ -145,8 +145,12 @@ def downloader(
                         "file": filename,
                         "folder": output_folder,
                     }
-                    for i in sorted(callbacks.keys()):
-                        callbacks[i](info)
+
+                    callback_kwargs = {
+                        callback["info_kwarg"]: info,
+                        **callback["kwargs"],
+                    }
+                    callback["target"](**callback_kwargs)
 
                 except (
                     youtube_dl.utils.ExtractorError,

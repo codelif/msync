@@ -26,7 +26,10 @@ from yt_dlp import YoutubeDL
 def fetch_songs(videos_generator) -> list[dict[str, str]]:
     # collecting relevant information in a dictionary and appending it in the playlist list
     playlist = []
+    ids = []
     for i in videos_generator:
+        if i["id"] in ids:
+            continue
         if i["title"].lower() in [
             "private video",
             "deleted video",
@@ -44,6 +47,8 @@ def fetch_songs(videos_generator) -> list[dict[str, str]]:
             "title": title.replace("/", "-"),  # special case
             "artist": artist.replace(" - Topic", ""),  # special case
         }
+
+        ids.append(i["id"])
         playlist.append(video)
 
     return playlist
