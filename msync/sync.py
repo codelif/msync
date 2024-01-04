@@ -117,7 +117,7 @@ def synchronize(yt_playlist_id, db_path, storage_dir, music_dir):
 
             symlink_path.symlink_to(storage_song_path)
 
-        print("\033[1;31m✔\033[0m '%s' Synced!" % playlist["title"])
+        print("\033[1;32m✔\033[0m '%s' Synced!" % playlist["title"])
 
     except KeyboardInterrupt:
         print()
