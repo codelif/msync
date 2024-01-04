@@ -1,9 +1,7 @@
 import sys
-from pprint import pprint
 
 from youtube_title_parse import get_artist_title as extract
 from yt_dlp import YoutubeDL
-
 
 
 def extract_artist_title(i):
@@ -24,7 +22,7 @@ def get_song():
     LINK = "https://www.youtube.com/watch?v=%s"
     with YoutubeDL({"quiet": True}) as dl:
         search = dl.extract_info("ytsearch:%s" % sys.argv[1], download=False)
-        
+
         song_url = search["entries"][0]["webpage_url"]
         song_info = dl.extract_info(song_url, download=False)
 

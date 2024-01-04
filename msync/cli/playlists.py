@@ -25,7 +25,7 @@ def playlists():
 
 @playlists.command("list")
 def show_playlists():
-    db = dba.PlaylistDB(get_default_paths()[1])
+    db = dba.PlaylistDB(get_default_paths()[2])
     db.cur.execute(f"SELECT folder_name,update_time FROM {db.PLAYLIST_TABLE};")
     for i, k in enumerate(db.cur.fetchall(), start=1):
         date = datetime.datetime.fromisoformat(k[1])
