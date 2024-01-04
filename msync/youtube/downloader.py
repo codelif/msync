@@ -36,7 +36,8 @@ class MyLogger(object):
         pass
 
     def error(self, msg):
-        print(msg)
+        # print(msg)
+        pass
 
 
 def update_metadata(media_file: str, title: str, artist: str):

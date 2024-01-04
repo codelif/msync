@@ -1,10 +1,11 @@
-import platform
 import os
+import platform
 import shutil
-import time
-from . import PROG
 import threading
+import time
 from typing import Any
+
+from . import PROG
 
 
 def get_user_data_folder(make_folder: bool = True) -> str:
@@ -17,7 +18,9 @@ def get_user_data_folder(make_folder: bool = True) -> str:
         case "darwin":
             user_data = os.path.expanduser("~/Library/Application Support")
         case "linux":
-            user_data = os.path.expanduser("~/.local/share")
+            user_data = os.environ.get("XDG_DATA_HOME")
+            if not user_data:
+                user_data = os.path.expanduser("~/.local/share")
         case "windows":
             user_data = os.environ["APPDATA"]
 
@@ -25,6 +28,28 @@ def get_user_data_folder(make_folder: bool = True) -> str:
     if make_folder:
         os.makedirs(user_data, exist_ok=True)
     return user_data
+
+
+def get_user_config_folder(make_folder: bool = True) -> str:
+    """Returns OS-specific application user data storage folder. Makes the directory if not present.
+
+    Returns:
+        str: user data storage folder
+    """
+    match platform.system().lower():
+        case "darwin":
+            user_config = os.path.expanduser("~/Library/Preferences")
+        case "linux":
+            user_config = os.environ.get("XDG_CONFIG_HOME")
+            if not user_config:
+                user_config = os.path.expanduser("~/.config")
+        case "windows":
+            user_config = os.environ["APPDATA"]
+
+    user_config = os.path.join(user_config, PROG)
+    if make_folder:
+        os.makedirs(user_config, exist_ok=True)
+    return user_config
 
 
 class StyledThread(threading.Thread):

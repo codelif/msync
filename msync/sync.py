@@ -9,7 +9,7 @@ from .youtube.downloader import downloader
 from .youtube.fetch import fetch_playlist, fetch_songs
 
 
-def synchronize(yt_playlist_id, db_path, music_dir, storage_dir):
+def synchronize(yt_playlist_id, db_path, storage_dir, music_dir):
     db_path = Path(db_path)
     db_path.parent.mkdir(parents=True, exist_ok=True)
     music_dir = Path(music_dir)
@@ -31,7 +31,7 @@ def synchronize(yt_playlist_id, db_path, music_dir, storage_dir):
     synced = (yt_playlist_id,) in playlists_in_db
     playlist = run_async_func(func=fetch_playlist, args=([yt_playlist_id],))[0]
     upstream_videos = fetch_songs(playlist["videos"])
-    print(len(upstream_videos))
+    # print(len(upstream_videos))
     if not synced:
         db_playlist_id = db.create_playlist_entry(
             True, yt_playlist_id, str(music_dir.absolute()), playlist["title"]
@@ -86,13 +86,14 @@ def synchronize(yt_playlist_id, db_path, music_dir, storage_dir):
             "info_kwarg": "info",
         }
 
-        downloader(
-            downable_videos,
-            playlist,
-            str(storage_dir.absolute()),
-            ffmpeg_location(),
-            callback,
-        )
+        if len(downable_videos) != 0:
+            downloader(
+                downable_videos,
+                playlist,
+                str(storage_dir.absolute()),
+                ffmpeg_location(),
+                callback,
+            )
 
         for i in upstream_videos:
             try:
@@ -111,8 +112,13 @@ def synchronize(yt_playlist_id, db_path, music_dir, storage_dir):
                 continue
             storage_song_path = Path(loc)
             symlink_path = music_dir.joinpath(playlist["title"], storage_song_path.name)
+            if symlink_path.exists():
+                continue
 
             symlink_path.symlink_to(storage_song_path)
+
+        print("\033[1;31m✔\033[0m '%s' Synced!" % playlist["title"])
+
     except KeyboardInterrupt:
         print()
         print("Exiting... (user interrupt)")
