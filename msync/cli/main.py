@@ -39,7 +39,7 @@ def sync():
         print("Sync List is empty!")
         return 1
 
-    print("Synchronising %d playlist(s):\n" % len(pl))
+    print("Synchronising %d playlist(s):" % len(pl))
 
     for p in pl:
         synchronize(p, *paths[2:])
