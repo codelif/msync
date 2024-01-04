@@ -119,13 +119,13 @@ def downloader(
     callback: dict[str, Any],
 ):
     prog = ProgressHook()
-    print(f"Downloading '{playlist['title']}'...")
+    # print(f"Downloading '{playlist['title']}'...")
     with tempfile.TemporaryDirectory() as tmpdir:
         for video in tqdm(
             videos,
             desc=playlist["title"],
             position=1,
-            leave=True,
+            leave=False,
             colour="GREEN",
             bar_format="{desc}: {n_fmt}/{total_fmt}|{bar}|",
         ):
@@ -162,3 +162,5 @@ def downloader(
                         % f"https://youtu.be/{video['id']}"
                     )
                     continue
+
+    print()
