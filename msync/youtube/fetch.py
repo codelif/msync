@@ -54,10 +54,21 @@ def fetch_songs(videos_generator) -> list[dict[str, str]]:
     return playlist
 
 
+class Logger(object):
+    def debug(self, msg):
+        pass
+
+    def warning(self, msg):
+        pass
+
+    def error(self, msg):
+        pass
+
+
 def fetch_playlist(playlist_IDs: list) -> list[dict]:
     response = []
     LINK = "https://www.youtube.com/playlist?list=%s"
-    with YoutubeDL(params={"quiet": True}) as dl:
+    with YoutubeDL(params={"quiet": True, "logger": Logger()}) as dl:
         for pid in playlist_IDs:
             try:
                 info = dl.extract_info(LINK % pid, process=False)
